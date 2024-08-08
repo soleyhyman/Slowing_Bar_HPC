@@ -1,4 +1,4 @@
-DIR='./envs/slowing_bar_hpc'
+DIR='./envs/slowing_bar_hpc1'
 reqs='./envs/requirements.txt'
 temp='./envs/temp.txt'
 
@@ -11,6 +11,8 @@ check_condition() {
         return 1 # false
     fi
 }
+
+echo ls
 
 # Sets all other nodes except 0 to wait
 if [ "$SLURM_ARRAY_TASK_ID" -ne 0 ]; then

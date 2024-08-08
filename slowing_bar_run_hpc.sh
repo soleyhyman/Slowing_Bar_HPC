@@ -19,7 +19,7 @@
 
 module load python/3.11.4 
 source ./functions/env_setup.sh
-source ./envs/slowing_bar_hpc/bin/activate
+source ./envs/slowing_bar_hpc1/bin/activate
 export PYTHONPATH="$PYTHONPATH:./functions"
 
 #simulation setup
