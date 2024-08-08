@@ -1,18 +1,18 @@
 DIR='./envs/slowing_bar_hpc'
 
 check_condition() {
-
     if [ -d "$DIR" ]; then
-        return 0  # Condition is true
+        return 0  
     else
-        return 1  # Condition is false
+        return 1
     fi
 }
 
-if [!(-d "$DIR") -a ($SLURM_ARRAY_TASK_ID -eq 0)]; then
-    echo
-    python3 -m venv $DIR
-    source $ENV_DIR/bin/activate
+# Correct syntax for the `if` statement and `-a` (AND) operator
+if [ ! -d "$DIR" ] && [ "$SLURM_ARRAY_TASK_ID" -eq 0 ]; then
+    echo "Setting up environment..."
+    python3 -m venv "$DIR"
+    source "$DIR/bin/activate"
     pip install -r ./envs/requirements.txt
 else
     while true; do
@@ -26,4 +26,4 @@ else
     done
 fi
 
-echo "Enviroment Setup Complete"
+echo "Environment Setup Complete"
