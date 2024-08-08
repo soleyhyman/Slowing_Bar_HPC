@@ -4,6 +4,7 @@ temp='./envs/temp.txt'
 
 check_condition() {
     # If env is set up properly, returns true
+    pip freeze
     pip freeze > "$temp"
     if diff "$reqs" "$temp" > /dev/null; then
         return 0 # true
@@ -11,8 +12,6 @@ check_condition() {
         return 1 # false
     fi
 }
-
-echo ls
 
 # Sets all other nodes except 0 to wait
 if [ "$SLURM_ARRAY_TASK_ID" -ne 0 ]; then
