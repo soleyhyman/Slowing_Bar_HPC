@@ -4,11 +4,14 @@ temp='./envs/temp.txt'
 
 check_condition() {
     # If env is set up properly, returns true
+    echo "Freeze Check"
     pip freeze
     pip freeze > "$temp"
     if diff "$reqs" "$temp" > /dev/null; then
+        echo "env Set"
         return 0 # true
     else
+        echo "env not set"
         return 1 # false
     fi
 }
@@ -20,6 +23,7 @@ fi
 
 # If env does not exist, it is created
 if [ ! -d "$DIR" ] && [ "$SLURM_ARRAY_TASK_ID" -eq 0 ]; then
+    echo "Env does not exist creating dir"
     python3 -m venv "$DIR"
 fi
 
@@ -33,12 +37,14 @@ if ! check_condition; then
         pip install -r "$reqs"
     else
         while true; do
+            echo "top of while"
             if check_condition; then
                 echo "ENV Installed"
                 break
             else 
                 echo "ENV Installing"
             fi
+            echo "sleep 30"
             sleep 30
         done
     fi
