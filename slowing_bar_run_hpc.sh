@@ -33,7 +33,7 @@ number_of_starts_to_integrate=0
 input="orbits/GrowDehnenBar_CR4/10000N_qiDF_MW14p_stklAA_orbits_cyl_GrowDehnenBar_CR4_0.npy"
 
 tot_arr=4
-:'
+
 # This section runs start_setup and captures the necissary save dirs 
 # for slurm maybe change python3 also change scriptdir
 echo 'Starting_setup'
@@ -58,4 +58,3 @@ echo "Integration complete"
 # echo "Starting final NPY merge"
 # time python3 ./merge_npy.py -jd $json_dir -a $tot_arr
 # echo "Merge Complete"
-'

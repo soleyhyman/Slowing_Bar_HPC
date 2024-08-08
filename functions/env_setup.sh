@@ -4,8 +4,6 @@ temp='./envs/temp.txt'
 
 check_condition() {
     # If env is set up properly, returns true
-    echo "Freeze Check"
-    pip freeze
     pip freeze > "$temp"
     if diff "$reqs" "$temp" > /dev/null; then
         echo "env Set"
@@ -34,10 +32,9 @@ source "$DIR/bin/activate"
 if ! check_condition; then
     if [ "$SLURM_ARRAY_TASK_ID" -eq 0 ]; then
         echo "Setting up environment..."
-        pip install -r "$reqs"
+        pip install -r "$reqs" > /dev/null 2>&1
     else
         while true; do
-            echo "top of while"
             if check_condition; then
                 echo "ENV Installed"
                 break
