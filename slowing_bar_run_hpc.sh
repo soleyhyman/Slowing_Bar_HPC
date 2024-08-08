@@ -18,7 +18,8 @@
 #SBATCH --mail-user=rtolfree@arizona.edu
 
 module load python/3.11.4 
-source ./envs/slowing_bar_hpc/bin/activate #will have to change for slurm
+source ./functions/env_setup.sh
+source ./envs/slowing_bar_hpc/bin/activate
 export PYTHONPATH="$PYTHONPATH:./functions"
 
 #simulation setup
