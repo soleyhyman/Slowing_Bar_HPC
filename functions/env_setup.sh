@@ -1,6 +1,6 @@
 DIR='./envs/slowing_bar_hpc'
-reqs='./envs/slowing_bar_hpc/requirements.txt'
-temp='./envs/slowing_bar_hpc/temp.txt'
+reqs='./envs/requirements.txt'
+temp='./envs/temp.txt'
 
 check_condition() {
     # If env is set up properly, returns true
