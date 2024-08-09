@@ -1,4 +1,4 @@
-from imports import argparse,np,json,os
+from imports import argparse,np,json,os,shutil
 import time
 # create parser for inital args
 parser = argparse.ArgumentParser(description='Running Integration')
@@ -9,6 +9,9 @@ args = vars(parser.parse_args())
 with open(args['jsondir'][0],'r') as json_file:
     data=json.load(json_file)
     dir_data=data['dir_data']
+
+# moves file from input to input dir
+shutil.move(dir_data['input_file_name'], dir_data['inputdir'])
 
 # gets a type for each different kind of info
 for type in range(3):

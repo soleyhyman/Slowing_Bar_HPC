@@ -5,12 +5,8 @@ from svptfncts import loadData
 from TSolidBodyRotationWrapperPotential import TSolidBodyRotationWrapperPotential
 
 # function to set up orbits for integration
-def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars,inp):
+def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     ICfile = np.load(inname)
-
-    # moves file from input to input dir
-    shutil.move(inname, inp)
-
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
     ICs=ICs[:num_stars]
 
@@ -115,7 +111,10 @@ else:
 # perform integration 
     # generate ICs
     input_name=str('./!_Input/'+input_name)
-    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0],dir_data['inputdir'])
+    # add input name to dir data
+    data[dir_data]['input_file_name']=input_name
+    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0])
+    
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
         with Parallel(n_jobs=num_cpus) as parallel:
@@ -137,3 +136,5 @@ else:
         save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{kinds[type]}_{arr_id}.npy"
         np.save(save_name,first_arr)
 
+with open(args['jsondir'][0],'w') as json_file:
+    json.dump(data,json_file,indent=4)
