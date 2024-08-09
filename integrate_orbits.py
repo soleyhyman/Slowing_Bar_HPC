@@ -7,7 +7,7 @@ from TSolidBodyRotationWrapperPotential import TSolidBodyRotationWrapperPotentia
 
 # function to set up orbits for integration
 def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
-    ICfile = np.load(inname)
+    ICfile = np.load({inname})
     ICs=ICs[:num_stars]
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
 
@@ -84,15 +84,17 @@ def integration_loop(index):
     return [index,save_name]
 
 # get input name
-input_name=find_input_file('./input','*.npy')
+input_name=find_input_file('./!_Input','*.npy')
 
 if input_name==-1:
     print('No Input File')
 else:
 # perform integration 
     # generate ICs
+    input_name='./!_Input'+input_name
+    print(input_name)
     ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'])
-
+    print(ICs.shape)
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
         with Parallel(n_jobs=num_cpus) as parallel:
