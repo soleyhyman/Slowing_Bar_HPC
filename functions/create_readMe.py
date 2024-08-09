@@ -16,9 +16,7 @@ def diskmodel_readme(json_path):
     # make diskmodel Readme
     with open(readme_path,'a') as rm:
         rm.write('Set Parameters for Orbital Initial Conditions\n')
-        rm.write(f"\tnsample : {str(sim_params['nstars']):<{40}} # number of samples per batch.\n")
-        rm.write(f"\tnbatch :  {str(sim_params['nbatch']):<{40}} # number of batches.\n")
-        rm.write(f"\tnorbit :  {str(sim_params['norbits']):<{40}} # number of orbits.\n")
+        rm.write(f"\tnsample : {str(sim_params['nstars']):<{40}} # number of stars per.\n")
         rm.write(f"\trmin :    {str(sim_params['rmin']):<{40}} # sets scaled rmin.\n")
         rm.write(f"\trmax :    {str(sim_params['rmax']):<{40}} # sets sclaed rmax.\n")
         rm.write(f"\tzmax :    {str(sim_params['zmax']):<{40}} # sets scales zmax.\n")
