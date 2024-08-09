@@ -69,8 +69,8 @@ dir_data['rmfile_dir'] = rmfile_unique
 dir_data['json_dir'] = json_unique 
 
 # pickle diskmodel and dehnenbar objs for TimeScale and other files
-dm_name=get_unique_filename(f'diskmodel_obj_{get_current_time_dhm()}','pickle','./metadata/pickles')
-dbo_name=get_unique_filename(f'dehnenbar_omega_obj_{get_current_time_dhm()}','pickle','./metadata/pickles')
+dm_name=get_unique_filename(f'diskmodel_obj_{get_current_time_dhm()}_','pickle','./metadata/pickles')
+dbo_name=get_unique_filename(f'dehnenbar_omega_obj_{get_current_time_dhm()}_','pickle','./metadata/pickles')
 saveData(diskmodel,dm_name)
 saveData(dehnenbar_omega,dbo_name)
 

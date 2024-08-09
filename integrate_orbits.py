@@ -91,7 +91,7 @@ if input_name==-1:
 else:
 # perform integration 
     # generate ICs
-    input_name='./\!_Input/'+input_name
+    input_name=str('./\!_Input/'+input_name)
     print(input_name)
     ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'])
     print(ICs.shape)
