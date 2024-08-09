@@ -6,7 +6,6 @@ check_all_done() {
     
     # Check if any tasks except index 0 are still running or pending
     num_ids=$(echo "$tasks" | wc -w)
-    echo $num_ids
     if [ "$num_ids" -eq 1 ]; then
         return 0 # If any other task is still running or pending, return false
     else 

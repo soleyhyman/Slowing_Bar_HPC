@@ -50,6 +50,7 @@ source ./metadata/dirs1.sh
 echo "Starting Integration"
 time python3 ./integrate_orbits.py -sn $simname -rmd $readme_dir -jd $json_dir -n $number_of_starts_to_integrate -a $tot_arr
 echo "Integration complete"
+echo
 
 echo "Merge final npy arrays"
 source ./functions/merge_arrays.sh
