@@ -4,7 +4,6 @@ import glob
 from datetime import datetime
 
 def find_input_file(dir,type):
-
     pattern=os.path.join(dir,type)
     files=glob.glob(pattern)
     if files:
@@ -24,7 +23,7 @@ def get_current_time_dhm():
     
     # Get hours and minutes
     hours = now.hour
-    minutes = now.minute
+    minutes =now.minute
     
     return f"{days}.{hours}.{minutes}"
 
