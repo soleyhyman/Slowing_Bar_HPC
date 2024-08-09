@@ -15,7 +15,7 @@ def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     trim = ICs[:len(ICs)%num_arrs]
     ICs=ICs[len(trim):]
     ICs = ICs.reshape(num_arrs,-1,6)
-    if trim:
+    if trim.size > 0:
         ICs[0]=np.append(ICs[0],trim)
     ICs = ICs[arr_id]
 
@@ -23,7 +23,7 @@ def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     trim = ICs[:len(ICs)%num_cpus]
     ICs=ICs[len(trim):]
     ICs = ICs.reshape(num_cpus,-1,6)
-    if trim:
+    if trim.size > 0:
         ICs[0]=np.append(ICs[0],trim)
     # reshapes again based on cpus in node
     return ICs
@@ -73,18 +73,35 @@ tvector=np.load(dir_data['tvector_dir'])
 def integration_loop(index):
     orbits=Orbit(ICs[index])
     orbits.integrate(tvector,pot,method='leapfrog')
+    # get cyl coords
     orp = np.array([orbits.R(tvector),
                 orbits.phi(tvector),
                 orbits.z(tvector),
                 orbits.vR(tvector),
                 orbits.vT(tvector),
                 orbits.vz(tvector)])
+    # get cart coords
+    oxy = np.array([orbits.x(tvector),
+                    orbits.y(tvector),
+                    orbits.z(tvector),
+                    orbits.vx(tvector),
+                    orbits.vy(tvector),
+                    orbits.vz(tvector)])
+    # get action potential
+    mwp=diskmodel_data['mwp']
+    oa = np.array([orbits(tvector).jr(mwp),
+                    orbits(tvector).jp(mwp),
+                    orbits(tvector).jz(mwp)])
     # moves orp so that its organized by orbit - timestamps - cords
     orp=orp.transpose(1,2,0)
-    save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{arr_id}_{index}.npy"
-    np.save(save_name,orp)
+    save_name_cyl=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cyl_{arr_id}_{index}.npy"
+    save_name_cart=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cart_{arr_id}_{index}.npy"
+    save_name_action=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_action_{arr_id}_{index}.npy"
+    np.save(save_name_cyl,orp)
+    np.save(save_name_cart,oxy)
+    np.save(save_name_action,oa)
     del(orbits)
-    return [index,save_name]
+    return [index,save_name_cyl,save_name_cart,save_name_action]
 
 # get input name
 input_name=find_input_file('./!_Input','*.npy')
@@ -96,21 +113,22 @@ else:
     # generate ICs
     input_name=str('./!_Input/'+input_name)
     ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0])
-    print(ICs.shape)
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
         with Parallel(n_jobs=num_cpus) as parallel:
             names = parallel(delayed(integration_loop)(i) for i in range(len(ICs)))
-    print(names)
+
     # merges all this arrs nmpys into one
-    first_arr=np.load(names[0][1])
-    for x in range(len(names)):
-        if x ==0:
-            pass 
-        else:
-            curr=np.load(names[x][1])
-            first_arr=np.concatenate((first_arr,curr),axis=0)
-        os.remove(names[x][1])
-    save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{arr_id}.npy"
-    np.save(save_name,first_arr)
+    for type in range(1,4):
+        kinds=['','cyl','cart','action']
+        first_arr=np.load(names[0][type])
+        for x in range(len(names)):
+            if x ==0:
+                pass 
+            else:
+                curr=np.load(names[x][type])
+                first_arr=np.concatenate((first_arr,curr),axis=0)
+            os.remove(names[x][type])
+        save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{kinds[type]}_{arr_id}.npy"
+        np.save(save_name,first_arr)
 
