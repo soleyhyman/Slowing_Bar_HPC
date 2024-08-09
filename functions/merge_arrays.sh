@@ -17,6 +17,7 @@ check_all_done() {
 if check_all_done; then
     echo "Last Node running. Will Merge."
     time python3 ./merge_npy.py -jd $json_dir -ar $tot_arr
+    echo "Merge Complete"
 else
     echo "Other nodes running. Last will merge."
 fi
