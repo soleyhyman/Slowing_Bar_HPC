@@ -51,5 +51,6 @@ echo "Starting Integration"
 time python3 ./integrate_orbits.py -sn $simname -rmd $readme_dir -jd $json_dir -n $number_of_starts_to_integrate -a $tot_arr
 echo "Integration complete"
 
-echo "Merge final nmpy arrays"
+echo "Merge final npy arrays"
 source ./functions/merge_arrays.sh
+echo "Merge complete"
