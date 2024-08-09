@@ -2,7 +2,7 @@ job_id=$SLURM_ARRAY_JOB_ID
 
 check_all_done() {
     # Get the list of all tasks in the array job
-    tasks=$(squeue -r --job 2072699 | awk 'NR > 1 {print $1}')
+    tasks=$(squeue -r --job $job_id | awk 'NR > 1 {print $1}')
     echo $tasks
     
     # Check if any tasks except index 0 are still running or pending
