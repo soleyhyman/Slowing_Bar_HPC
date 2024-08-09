@@ -7,7 +7,7 @@ from TSolidBodyRotationWrapperPotential import TSolidBodyRotationWrapperPotentia
 
 # function to set up orbits for integration
 def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
-    ICfile = np.load({inname})
+    ICfile = np.load(inname)
     ICs=ICs[:num_stars]
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
 
