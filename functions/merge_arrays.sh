@@ -21,7 +21,7 @@ check_all_done() {
 }
 
 # Check if any tasks are still running or pending
-if [[ "$array_id" -eq 0 ]]; then
+if [[ "$array_id" -eq 0 ]]; do
     while True; then
         if check_all_done; then
             time python3 ./merge_npy.py -jd $json_dir -ar $tot_arr
