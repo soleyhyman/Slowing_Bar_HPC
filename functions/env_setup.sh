@@ -6,10 +6,10 @@ check_condition() {
     # If env is set up properly, returns true
     pip freeze > "$temp"
     if diff "$reqs" "$temp" > /dev/null; then
-        echo "env Set"
+        echo "Enviroment set."
         return 0 # true
     else
-        echo "env not set"
+        echo "Enviroment not set."
         return 1 # false
     fi
 }

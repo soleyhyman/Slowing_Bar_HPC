@@ -56,11 +56,10 @@ NatToGyrConversion = dtmaxPhys/dtmaxNat
 # convert tslow
 TSlowNat = ((dehnenBarModel_Omega_data['TSlowPhys']/NatToGyrConversion).decompose()).value
 
-### THIS IS INSANLY GOOFY MUST FIX ###
+# pickles TSlowNat so it can be passed to integrate orbits
 TSlowNat_name=get_unique_filename('TSlowNat','pickle','./metadata/pickles')
 saveData(TSlowNat,TSlowNat_name)
 data['dir_data']['TSlowNat_dir']=TSlowNat_name
-### FIX THIS HORIDNESS PLEASE ###
 
 # determine aprox steps
 ntstepApprox = ((dehnenBarModel_Omega_data['TSlowPhys']/dtmaxPhys).decompose()).value
