@@ -52,4 +52,4 @@ time python3 ./integrate_orbits.py -sn $simname -rmd $readme_dir -jd $json_dir -
 echo "Integration complete"
 
 echo "merge final nmpy arrays"
-source ./functions/mergearrays.sh
+source ./functions/merge_arrays.sh
