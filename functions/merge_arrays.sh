@@ -2,19 +2,14 @@ job_id=$SLURM_ARRAY_JOB_ID
 
 check_all_done() {
     # Get the list of all tasks in the array job
-    tasks=$(squeue -j "$job_id" -o "%.2t %.7i" | awk '{print $2}')
+    tasks=$(squeue -r --job 2072699 | awk 'NR > 1 {print $1}')
     echo $tasks
     
     # Check if any tasks except index 0 are still running or pending
-    for task in $tasks; do
-        if [ "$task" != "0" ]; then
-            task_status=$(squeue -j "$SLURM_JOB_ID" -t R,PD -o "%.2t %.7i" | awk -v id="$task" '{if ($2 == id) print $1}')
-            if [[ -n "$task_status" ]]; then
-                return 1 # If any other task is still running or pending, return false
-            fi
-        fi
-    done
-    return 0 # All other tasks are done
+    num_ids=$(echo "$tasks" | awk 'END {print NR}')
+    if [ "$num_ids" -eq 1 ]; then
+        return 0 # If any other task is still running or pending, return false
+    fi
 }
 
 # Check if any tasks are still running or pending
