@@ -10,7 +10,7 @@ def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     ICfile = np.load(inname)
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
     ICs=ICs[:num_stars]
-    
+
     # even deistributes arr into large bins based on how many array there are and assigns each arr a different set
     trim = ICs[:len(ICs)%num_arrs]
     ICs=ICs[len(trim):]
@@ -92,8 +92,7 @@ else:
 # perform integration 
     # generate ICs
     input_name=str('./!_Input/'+input_name)
-    print(input_name)
-    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'])
+    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0])
     print(ICs.shape)
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
