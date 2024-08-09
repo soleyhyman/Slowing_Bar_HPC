@@ -12,7 +12,7 @@
 #SBATCH --array=0-3
 #SBATCH --partition=standard
 #SBATCH --account=kjdaniel
-#SBATCH --time=0:20:00
+#SBATCH --time=1:00:00
 #SBATCH --output=/home/u21/rtolfree/job_outputs/slowing_bar/job_out_%x-%j-%A-%a.out
 #SBATCH --mail-type=all
 #SBATCH --mail-user=rtolfree@arizona.edu
