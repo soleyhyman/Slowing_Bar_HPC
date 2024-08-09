@@ -2,7 +2,8 @@ from imports import argparse,np,json,os,shutil
 import time
 # create parser for inital args
 parser = argparse.ArgumentParser(description='Running Integration')
-parser.add_argument('-jd','--jsondir', type=str, nargs=1, help='Takes in the curr JSON dir') 
+parser.add_argument('-jd','--jsondir', type=str, nargs=1, help='Takes in the curr JSON dir')
+parser.add_argument('-ar','--tot_arr',type=int,nargs=1,help='Takes total arrs') 
 args = vars(parser.parse_args())
 
  # open json to get necissary file paths

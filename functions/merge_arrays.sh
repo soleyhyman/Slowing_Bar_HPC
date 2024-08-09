@@ -24,7 +24,7 @@ check_all_done() {
 if [[ "$array_id" -eq 0 ]]; then
     while True; then
         if check_all_done; then
-            time python3 ./merge_npy.py -jd $json_dir
+            time python3 ./merge_npy.py -jd $json_dir -ar $tot_arr
         else
             sleep 60
             echo "Other jobs not done"
