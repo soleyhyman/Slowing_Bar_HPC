@@ -1,4 +1,4 @@
-from imports import json, argparse, datetime, __version__, timezone
+from imports import json, argparse, datetime, __version__, timezone,os
 from DiskModel_obj import DiskModel_obj
 from dbm_omega_obj import dbm_omega_obj
 from create_readMe import diskmodel_readme, dehnen_readme
@@ -90,26 +90,27 @@ json_data = {
 with open(json_unique, 'w') as json_file:
     json.dump(json_data,json_file, indent=4)
 
-# create README
-with open(rmfile_unique, 'w') as rm:
-    rm.write('Slowing Bar Integration\n\n')
-    rm.write('Made by Dr. Kate Daniel and Rowan Tolfree\n')
-    rm.write('-----------------------------------------\n')
-    rm.write('##### ADD A DESCRIPTION #####\n')
-    rm.write('-----------------------------------------\n\n')
-    rm.write(f"Created: {str(datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))}\n")
-    rm.write(f"Galpy {__version__}")    
-    rm.write('\n\n')
+if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
+    # create README
+    with open(rmfile_unique, 'w') as rm:
+        rm.write('Slowing Bar Integration\n\n')
+        rm.write('Made by Dr. Kate Daniel and Rowan Tolfree\n')
+        rm.write('-----------------------------------------\n')
+        rm.write('##### ADD A DESCRIPTION #####\n')
+        rm.write('-----------------------------------------\n\n')
+        rm.write(f"Created: {str(datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S'))}\n")
+        rm.write(f"Galpy {__version__}")    
+        rm.write('\n\n')
 
-# add diskmodel and dehnen to readme 
-diskmodel_readme(json_unique)
-dehnen_readme(json_unique)
+    # add diskmodel and dehnen to readme 
+    diskmodel_readme(json_unique)
+    dehnen_readme(json_unique)
 
-# writes dirs to a .sh file to bring up to the running shell
-with open('metadata/dirs.sh', 'w') as f:
-    f.write(f"input_dir={dir_data['inputdir']}\n")
-    f.write(f"output_dir={dir_data['outdir']}\n")
-    f.write(f"json_dir={dir_data['json_dir']}\n")
-    f.write(f"readme_dir={dir_data['rmfile_dir']}\n")
-    f.write(f"dm_name={dm_name}\n")
-    f.write(f"dbo_name={dbo_name}\n")
+    # writes dirs to a .sh file to bring up to the running shell
+    with open('metadata/dirs.sh', 'w') as f:
+        f.write(f"input_dir={dir_data['inputdir']}\n")
+        f.write(f"output_dir={dir_data['outdir']}\n")
+        f.write(f"json_dir={dir_data['json_dir']}\n")
+        f.write(f"readme_dir={dir_data['rmfile_dir']}\n")
+        f.write(f"dm_name={dm_name}\n")
+        f.write(f"dbo_name={dbo_name}\n")

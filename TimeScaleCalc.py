@@ -1,4 +1,4 @@
-from imports import u, np, argparse, json, vcirc, argrelextrema, lindbladR, np
+from imports import u, np, argparse, json, vcirc, argrelextrema, lindbladR, np,os
 from dir_func import get_unique_filename, json_serialize_full
 from svptfncts import loadData,saveData
 from create_readMe import TimeScaleCalc_readme
@@ -141,9 +141,9 @@ data['timeScaleVals_readme']=clean
 
 with open(args['jsondir'][0],'w') as json_file:
     json.dump(data,json_file,indent=4)
-
-# create readme
-TimeScaleCalc_readme(args['jsondir'][0])
+if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
+    # create readme
+    TimeScaleCalc_readme(args['jsondir'][0])
 
 # write vars to be passed up to shell 
 with open('metadata/dirs1.sh', 'w') as f:

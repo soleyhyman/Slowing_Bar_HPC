@@ -12,10 +12,10 @@ with open(args['jsondir'][0],'r') as json_file:
     dir_data=data['dir_data']
 
 # moves file from input to input dir
-try:
-    shutil.move(dir_data['input_file_name'], dir_data['inputdir'])
-except:
-    print('File could not be moved from input.')
+# try:
+#     shutil.move(dir_data['input_file_name'], dir_data['inputdir'])
+# except:
+#     print('File could not be moved from input.')
 
 # gets a type for each different kind of info
 for type in range(3):

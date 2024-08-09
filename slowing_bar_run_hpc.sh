@@ -27,7 +27,7 @@ simname="SlowDehnenBar_CR4_CR8"
 startsimname="GrowDehnenBar_CR4"
 
 # ENTER THE NUMBER OF ORBITS YOU WOULD LIKE TO INTEGRATE
-number_of_starts_to_integrate=40 # this is the total amount of start YOU WOULD LIKE TO INTEGRATE
+number_of_starts_to_integrate=20 # this is the total amount of start YOU WOULD LIKE TO INTEGRATE
 tot_arr=4 # this is the total number of jobs
 
 # This section runs start_setup and captures the necissary save dirs 
