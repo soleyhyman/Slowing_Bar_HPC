@@ -91,11 +91,11 @@ def integration_loop(index):
     oa = np.array([orbits(tvector).jr(mwp),
                     orbits(tvector).jp(mwp),
                     orbits(tvector).jz(mwp)])
-    # moves orp so that its organized by orbit - timestamps - cords
+    
+    # transposes orp so that its organized by orbit - timestamps - cords
     orp=orp.transpose(1,2,0)
     oxy=oxy.transpose(1,2,0)
     oa=oa.transpose(1,2,0)
-    print(oa.shape)
     save_name_cyl=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cyl_{arr_id}_{index}.npy"
     save_name_cart=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cart_{arr_id}_{index}.npy"
     save_name_action=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_action_{arr_id}_{index}.npy"
