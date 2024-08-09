@@ -52,6 +52,6 @@ time python3 ./integrate_orbits.py -sn $simname -rmd $readme_dir -jd $json_dir -
 echo "Integration complete"
 echo
 
-echo "Merge final npy arrays"
+echo "Doing final merge check"
 source ./functions/merge_arrays.sh
-echo "Merge complete"
+echo "Node Completed"

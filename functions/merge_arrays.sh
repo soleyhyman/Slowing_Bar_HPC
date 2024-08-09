@@ -14,14 +14,21 @@ check_all_done() {
 }
 
 # Check if any tasks are still running or pending
-if [ "$SLURM_ARRAY_TASK_ID" -eq 0 ]; then
-    while true; do
-        if check_all_done; then
-            time python3 ./merge_npy.py -jd $json_dir -ar $tot_arr
-            break
-        else
-            sleep 60
-            echo "Other jobs not done"
-        fi
-    done
+# if [ "$SLURM_ARRAY_TASK_ID" -eq 0 ]; then
+
+#     while true; do
+#         if check_all_done; then
+#             time python3 ./merge_npy.py -jd $json_dir -ar $tot_arr
+#             break
+#         else
+#             sleep 60
+#             echo "Other jobs not done"
+#         fi
+#     done
+# fi
+if check_all_done; then
+    echo "Last Node running. Will Merge."
+    time python3 ./merge_npy.py -jd $json_dir -ar $tot_arr
+else
+    echo "Other nodes running. Last will merge."
 fi
