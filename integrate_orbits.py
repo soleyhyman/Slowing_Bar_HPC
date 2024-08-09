@@ -1,13 +1,16 @@
-from imports import argparse,json,np,Orbit,os
+from imports import argparse,json,np,Orbit,os,Parallel, delayed, parallel_backend,shutil
 from dir_func import find_input_file
-from joblib import Parallel, delayed, parallel_backend
 
 from svptfncts import loadData
 from TSolidBodyRotationWrapperPotential import TSolidBodyRotationWrapperPotential
 
 # function to set up orbits for integration
-def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
+def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars,inp):
     ICfile = np.load(inname)
+
+    # moves file from input to input dir
+    shutil.move(inname, inp)
+
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
     ICs=ICs[:num_stars]
 
@@ -112,16 +115,18 @@ else:
 # perform integration 
     # generate ICs
     input_name=str('./!_Input/'+input_name)
-    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0])
+    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0],dir_data['input_dir'])
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
         with Parallel(n_jobs=num_cpus) as parallel:
             names = parallel(delayed(integration_loop)(i) for i in range(len(ICs)))
 
     # merges all this arrs nmpys into one
+    # gets a type for each different kind of info
     for type in range(1,4):
         kinds=['','cyl','cart','action']
         first_arr=np.load(names[0][type])
+        # selects a type and merges the arrays 
         for x in range(len(names)):
             if x ==0:
                 pass 

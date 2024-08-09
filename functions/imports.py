@@ -1,6 +1,7 @@
 
 import numpy as np
 import glob
+import shutil
 
 #import scipy as sc
 from scipy.signal import argrelextrema
@@ -21,5 +22,5 @@ from galpy.potential import MWPotential2014, vcirc, lindbladR
 from galpy.potential import  DehnenBarPotential
 
 # paralizing imports
-from multiprocessing import Pool
+from joblib import Parallel, delayed, parallel_backend
 import os

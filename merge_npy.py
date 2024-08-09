@@ -3,24 +3,19 @@ import time
 # create parser for inital args
 parser = argparse.ArgumentParser(description='Running Integration')
 parser.add_argument('-jd','--jsondir', type=str, nargs=1, help='Takes in the curr JSON dir') 
-parser.add_argument('-a','--tot_arr',type=int, nargs=1,help='Takes the total arrs in array job')
 args = vars(parser.parse_args())
 
-# find arr num for arr job
-arr_id = int(os.environ["SLURM_ARRAY_TASK_ID"])
+ # open json to get necissary file paths
+with open(args['jsondir'][0],'r') as json_file:
+    data=json.load(json_file)
+    dir_data=data['dir_data']
 
-if arr_id==0:
-    # sleep 
-    time.sleep(600)
-
-    # open json to get necissary file paths
-    with open(args['jsondir'][0],'r') as json_file:
-        data=json.load(json_file)
-        dir_data=data['dir_data']
-
-    init_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}"
+# gets a type for each different kind of info
+for type in range(3):
+    kinds=['cyl','cart','action']
+    init_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{kinds[type]}"
     # combine arrs
-    results=np.load(f"{dir_data['outdir']}/{dir_data['sim_name_full']}_0.npy")
+    results=np.load(f"{init_name}_0.npy")
     for x in range(args['tot_arr'][0]):
         if x ==0:
             pass
