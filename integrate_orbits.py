@@ -10,23 +10,21 @@ def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     ICfile = np.load(inname)
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
     ICs=ICs[:num_stars]
-    print(ICs.shape)
 
     # even deistributes arr into large bins based on how many array there are and assigns each arr a different set
     trim = ICs[:len(ICs)%num_arrs]
-    print(trim)
     ICs=ICs[len(trim):]
-    print(ICs.shape)
     ICs = ICs.reshape(num_arrs,-1,6)
-    print(ICs.shape)
-    ICs[0]=np.append(ICs[0],trim)
-    print(ICs.shape)
+    if trim:
+        ICs[0]=np.append(ICs[0],trim)
     ICs = ICs[arr_id]
 
+    # divide based on num cpus
     trim = ICs[:len(ICs)%num_cpus]
     ICs=ICs[len(trim):]
     ICs = ICs.reshape(num_cpus,-1,6)
-    ICs[0]=np.append(ICs[0],trim)
+    if trim:
+        ICs[0]=np.append(ICs[0],trim)
     # reshapes again based on cpus in node
     return ICs
 
