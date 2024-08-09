@@ -115,7 +115,7 @@ else:
 # perform integration 
     # generate ICs
     input_name=str('./!_Input/'+input_name)
-    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0],dir_data['input_dir'])
+    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0],dir_data['inputdir'])
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
         with Parallel(n_jobs=num_cpus) as parallel:
