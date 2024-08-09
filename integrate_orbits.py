@@ -112,9 +112,9 @@ else:
     # generate ICs
     input_name=str('./!_Input/'+input_name)
     # add input name to dir data
-    data[dir_data]['input_file_name']=input_name
+    data['dir_data']['input_file_name']=input_name
     ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0])
-    
+
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
         with Parallel(n_jobs=num_cpus) as parallel:
