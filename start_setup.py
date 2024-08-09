@@ -1,8 +1,8 @@
-from imports import json, argparse, datetime, __version__, timezone,os
+from imports import json, argparse, datetime, __version__, timezone,os,np
 from DiskModel_obj import DiskModel_obj
 from dbm_omega_obj import dbm_omega_obj
 from create_readMe import diskmodel_readme, dehnen_readme
-from dir_func import create_directories, get_unique_filename, json_serialize_full, get_current_time_dhm
+from dir_func import create_directories, get_unique_filename, json_serialize_full, get_current_time_dhm,find_input_file
 from svptfncts import saveData
 
 #create parser to get arguments from sh
@@ -33,9 +33,18 @@ create_directories('./metadata')
 #create pickle dir
 create_directories('./metadata/pickles')
 
+# determines file name based on how many stars are chosen
+if args['nstars'][0]==-1:
+    input_name=find_input_file('./!_Input','*.npy')
+    arr=np.load(input_name)
+    nstars=arr.shape[1]
+    del arr
+else:
+    nstars=args['nstars'][0]
+
 # setup sim params 
 sim_params = {
-    'nstars' : args['nstars'][0],
+    'nstars' : nstars,
     'rmin' : 0.0125, 
     'rmax' : 1.25,      
     'zmax' : 0.3 

@@ -32,7 +32,6 @@ parser = argparse.ArgumentParser(description='Running Integration')
 parser.add_argument('-rmd','--readmedir',type=str, nargs=1, help='Takes in the curr README dir')
 parser.add_argument('-jd','--jsondir', type=str, nargs=1, help='Takes in the curr JSON dir') 
 parser.add_argument('-sn', '--simname', type=str, nargs=1, help='The name of the output folder.')
-parser.add_argument('-n', '--nstars', type=int, nargs=1, help='The number of stars.')
 parser.add_argument('-a', '--tot_arr',type=int,nargs=1, help='The total number of arrays in array job.')
 args = vars(parser.parse_args())
 
@@ -116,7 +115,7 @@ else:
     input_name=str('./!_Input/'+input_name)
     # add input name to dir data
     data['dir_data']['input_file_name']=input_name
-    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'][0])
+    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,data['sim_params']['nstars'])
 
     # integration_loop
     with parallel_backend('loky',n_jobs=num_cpus):
