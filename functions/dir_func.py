@@ -1,5 +1,32 @@
 # make necissary dirs
 import os
+import glob
+from datetime import datetime
+
+def find_input_file(dir,type):
+
+    pattern=os.path.join(dir,type)
+    files=glob.glob(pattern)
+    if files:
+        file_name = os.path.basename(files[0])
+        print(f'Using: {file_name} as file')
+        return file_name
+    else:
+        print('No File Found')
+        return -1
+
+def get_current_time_dhm():
+    now = datetime.now()
+    
+    # Calculate total days since the beginning of the year
+    start_of_year = datetime(now.year, 1, 1)
+    days = (now - start_of_year).days
+    
+    # Get hours and minutes
+    hours = now.hour
+    minutes = now.minute
+    
+    return f"{days}.{hours}.{minutes}"
 
 def create_directories(path):
     os.makedirs(path, exist_ok=True)

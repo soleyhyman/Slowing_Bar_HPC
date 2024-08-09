@@ -2,13 +2,12 @@ from imports import json, argparse, datetime, __version__, timezone
 from DiskModel_obj import DiskModel_obj
 from dbm_omega_obj import dbm_omega_obj
 from create_readMe import diskmodel_readme, dehnen_readme
-from dir_func import create_directories, get_unique_filename, json_serialize_full
+from dir_func import create_directories, get_unique_filename, json_serialize_full, get_current_time_dhm
 from svptfncts import saveData
 
 #create parser to get arguments from sh
 parser = argparse.ArgumentParser(description='Creating README and making necissary directories.')
-parser.add_argument('-n', '--nstars', type=int, nargs=1, help='The number of stars per batch.')
-parser.add_argument('-nb', '--nbatch', type=int, nargs=1, help='The number of batches.')
+parser.add_argument('-n', '--nstars', type=int, nargs=1, help='The number of stars.')
 parser.add_argument('-sn', '--simname', type=str, nargs=1, help='The name of the output folder.')
 parser.add_argument('-ssn', '--startsimname', type=str, nargs=1, help='The name of the folder holding inital data.')
 # parser.add_argument('-rmin', '--rmin', type=float, nargs=1, help='Value of rmin.')
@@ -36,9 +35,7 @@ create_directories('./metadata/pickles')
 
 # setup sim params 
 sim_params = {
-    'norbits' : args['nstars'][0]*args['nbatch'][0],
     'nstars' : args['nstars'][0],
-    'nbatch' : args['nbatch'][0],
     'rmin' : 0.0125, 
     'rmax' : 1.25,      
     'zmax' : 0.3 
@@ -56,15 +53,15 @@ dbo_clean,dbo_dirty=json_serialize_full(dehnenbar_omega.get_params())
 dir_data = {
     "outdir" : f"./orbits/{str(args['simname'][0])}",
     'inputdir' : f"./orbits/{str(args['startsimname'][0])}",
-    'sim_name_full': f"{args['startsimname'][0]}_{sim_params['norbits']}N_qiDF_{dm_clean['dpType']}p_{dm_clean['AAType']}"
+    'sim_name_full': f"{args['startsimname'][0]}_{sim_params['nstars']}_{get_current_time_dhm()}"
 }
 
 # create unique filename
-json_filename = f"{args['startsimname'][0]}_{sim_params['norbits']}N_qiDF_{dm_clean['dpType']}p_{dm_clean['AAType']}"
+json_filename = f"{dir_data['sim_name_full']}"
 json_unique = get_unique_filename(json_filename,'json','./metadata')
 
 # create README name
-rmfile = f"{args['startsimname'][0]}_{sim_params['norbits']}N_qiDF_{dm_clean['dpType']}p_{dm_clean['AAType']}_README"
+rmfile = f"{dir_data['sim_name_full']}_README"
 rmfile_unique = get_unique_filename(rmfile,'txt','./READMEs')
 
 # add file names to dir_data
@@ -72,8 +69,8 @@ dir_data['rmfile_dir'] = rmfile_unique
 dir_data['json_dir'] = json_unique 
 
 # pickle diskmodel and dehnenbar objs for TimeScale and other files
-dm_name=get_unique_filename('diskmodel_obj','pickle','./metadata/pickles')
-dbo_name=get_unique_filename('dehnenbar_omega_obj','pickle','./metadata/pickles')
+dm_name=get_unique_filename(f'diskmodel_obj_{get_current_time_dhm()}','pickle','./metadata/pickles')
+dbo_name=get_unique_filename(f'dehnenbar_omega_obj_{get_current_time_dhm()}','pickle','./metadata/pickles')
 saveData(diskmodel,dm_name)
 saveData(dehnenbar_omega,dbo_name)
 

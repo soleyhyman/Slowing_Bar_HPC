@@ -1,18 +1,27 @@
-from imports import argparse,json,np,Orbit,os,Pool
-from dir_func import get_unique_filename, create_directories
+from imports import argparse,json,np,Orbit,os
+from dir_func import find_input_file
 from joblib import Parallel, delayed, parallel_backend
 
-from svptfncts import loadData,saveData
+from svptfncts import loadData
 from TSolidBodyRotationWrapperPotential import TSolidBodyRotationWrapperPotential
 
 # function to set up orbits for integration
-def orbit_file_setup(inname,num_cpus,num_arrs,arr_id):
+def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     ICfile = np.load(inname)
+    ICs=ICs[:num_stars]
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
+
     # even deistributes arr into large bins based on how many array there are and assigns each arr a different set
-    ICs = ICs.reshape(num_arrs,(len(ICs)//num_arrs),6)
+    trim = ICs[:len(ICs)%num_arrs]
+    ICs=ICs[len(trim):]
+    ICs = ICs.reshape(num_arrs,-1,6)
+    ICs[0]=np.append(ICs[0],trim)
     ICs = ICs[arr_id]
-    ICs = ICs.reshape(num_cpus,(len(ICs)//num_cpus),6)
+
+    trim = ICs[:len(ICs)%num_cpus]
+    ICs=ICs[len(trim):]
+    ICs = ICs.reshape(num_cpus,-1,6)
+    ICs[0]=np.append(ICs[0],trim)
     # reshapes again based on cpus in node
     return ICs
 
@@ -21,9 +30,7 @@ parser = argparse.ArgumentParser(description='Running Integration')
 parser.add_argument('-rmd','--readmedir',type=str, nargs=1, help='Takes in the curr README dir')
 parser.add_argument('-jd','--jsondir', type=str, nargs=1, help='Takes in the curr JSON dir') 
 parser.add_argument('-sn', '--simname', type=str, nargs=1, help='The name of the output folder.')
-parser.add_argument('-in','--inputname',type=str,nargs=1,help='This takes the input dir')
-parser.add_argument('-n', '--nstars', type=int, nargs=1, help='The number of stars per batch.')
-parser.add_argument('-nb', '--nbatch', type=int, nargs=1, help='The number of batches.')
+parser.add_argument('-n', '--nstars', type=int, nargs=1, help='The number of stars.')
 parser.add_argument('-a', '--tot_arr',type=int,nargs=1, help='The total number of arrays in array job.')
 args = vars(parser.parse_args())
 
@@ -59,9 +66,6 @@ pot=[diskmodel_data['mwp'],btp]
 nphio=np.load(dir_data['tphio_dir'])
 tvector=np.load(dir_data['tvector_dir'])
 
-# perform integration 
-ICs=orbit_file_setup(args['inputname'][0],num_cpus,args['tot_arr'][0],arr_id)
-
 # integration_func
 def integration_loop(index):
     orbits=Orbit(ICs[index])
@@ -79,21 +83,30 @@ def integration_loop(index):
     del(orbits)
     return [index,save_name]
 
-# integration_loop
-with parallel_backend('loky',n_jobs=num_cpus):
-    with Parallel(n_jobs=num_cpus) as parallel:
-        names = parallel(delayed(integration_loop)(i) for i in range(len(ICs)))
-print(names)
-# merges all this arrs nmpys into one
-first_arr=np.load(names[0][1])
-for x in range(len(names)):
-    if x ==0:
-        pass 
-    else:
-        curr=np.load(names[x][1])
-        first_arr=np.concatenate((first_arr,curr),axis=0)
-    os.remove(names[x][1])
-save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{arr_id}.npy"
-print(first_arr.shape)
-np.save(save_name,first_arr)
+# get input name
+input_name=find_input_file('./input','*.npy')
+
+if input_name==-1:
+    print('No Input File')
+else:
+# perform integration 
+    # generate ICs
+    ICs=orbit_file_setup(input_name,num_cpus,args['tot_arr'][0],arr_id,args['nstars'])
+
+    # integration_loop
+    with parallel_backend('loky',n_jobs=num_cpus):
+        with Parallel(n_jobs=num_cpus) as parallel:
+            names = parallel(delayed(integration_loop)(i) for i in range(len(ICs)))
+    print(names)
+    # merges all this arrs nmpys into one
+    first_arr=np.load(names[0][1])
+    for x in range(len(names)):
+        if x ==0:
+            pass 
+        else:
+            curr=np.load(names[x][1])
+            first_arr=np.concatenate((first_arr,curr),axis=0)
+        os.remove(names[x][1])
+    save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{arr_id}.npy"
+    np.save(save_name,first_arr)
 

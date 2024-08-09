@@ -37,6 +37,7 @@ def findphit(omegai, omegat, t):
 # open json and take necissary data
 with open(args['jsondir'][0],'r') as json_file:
     data=json.load(json_file)
+    dir_data=data['dir_data']
     sim_params=data['sim_params']
     # load pickled objs
     diskmodel=loadData(data['dir_data']['dm_name'])
@@ -94,13 +95,13 @@ endmwCR = lindbladR(diskmodel_data['mwp'],omegat[maxpoints[0][-1]],m='corotation
 # Setup meta data files
 
 # tfile creation
-tfile = f"{args['simname'][0]}_{sim_params['norbits']}N_qiDF_{diskmodel_data['dpType']}p_{diskmodel_data['AAType']}_tvector"
+tfile = f"{dir_data['sim_name_full']}_tvector"
 tfile_unique = get_unique_filename(tfile,'npy','./metadata')
 np.save(tfile_unique,tvector)
 data['dir_data']['tvector_dir']=tfile_unique
 
 # tphiofile creation
-tphiofile = f"{args['simname'][0]}_{sim_params['norbits']}N_qiDF_{diskmodel_data['dpType']}p_{diskmodel_data['AAType']}_tphi0"
+tphiofile = f"{dir_data['sim_name_full']}_tphi0"
 tphio_unique= get_unique_filename(tphiofile,'npy','./metadata')
 nphio = maxpoints[0]
 nphio = np.insert(nphio,0,0)
@@ -108,7 +109,7 @@ np.save(tphio_unique,nphio)
 data['dir_data']['tphio_dir']=tphio_unique
 
 # create omeatfile download
-omegatfile =  f"{args['simname'][0]}_{sim_params['norbits']}N_qiDF_{diskmodel_data['dpType']}p_{diskmodel_data['AAType']}_Omegat"
+omegatfile =  f"{dir_data['sim_name_full']}_Omegat"
 omegat_unique = get_unique_filename(omegatfile,'npy','./metadata')
 np.save(omegat_unique,omegat[nphio])
 data['dir_data']['omegat_dir']=omegat_unique
