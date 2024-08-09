@@ -13,7 +13,7 @@ with open(args['jsondir'][0],'r') as json_file:
 
 # moves file from input to input dir and renames
 try:
-    os.rename(dir_data['input_file_name'],f"{dir_data['inputdir']}/Input_{dir_data['sim_name_full']}")
+    os.rename(dir_data['input_file_name'],f"{dir_data['inputdir']}/Input_{dir_data['sim_name_full']}.npy")
     # shutil.move(f"./!_Input/Input_{dir_data['sim_name_full']}", dir_data['inputdir'])
     print(f"Input {dir_data['input_file_name']}\nHas been renamed to: Input_{dir_data['sim_name_full']} and moved to {dir_data['inputdir']}")
 except:
