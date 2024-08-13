@@ -8,7 +8,7 @@ To run this program first open terminal
 2. Navigate to where you want to download the program. Using cd to navigate.
 3. In the terminal enter: git clone https://github.com/ezpasss/Slowing_Bar_HPC.git
 Once this is completed the Slowing Bar Integration is downloaded.
-# Running the program
+# Running the Program
 Use cd to navigate into the parent directory --> cd Slowing_Bar_HPC/
 Once here, move the input file into the !_Input folder.
 The files can be moved in two ways. 
@@ -16,11 +16,11 @@ The files can be moved in two ways.
   1. Using the HPC OnDemand navigate to the !_Input folder and click upload.
   2. Either drag the input npy file to the submission box or browse your files and select it.
   Using the file transfer system. 
-  1. USING A SEPARATE TERMINAL first navigate to the local directory where the input file is located.
+  1. **USING A SEPARATE TERMINAL** First navigate to the local directory where the input file is located.
   2. Connecting to the HPC's file transfer service in the terminal using --> sftp USERNAME@filexfer.hpc.arizona.edu
   3. You are now on the HPC, navigate to the !_Input folder using cd in the terminal.
-  4. In Terminal use put (FILENAME)
-## Modifying the program for your use
+  4. In Terminal use put (FILENAME) where filename is the name of your input file
+## Modifying the Program for Personal Use
 For the program to run properly you must modify some lines in slowing_bar_run_hpc.sh
 This can be achieved using the HPC's OnDemand or through the terminal. 
   # Through Terminal
@@ -36,7 +36,7 @@ This can be achieved using the HPC's OnDemand or through the terminal.
   9.   To submit your changes use ctrl+o and then enter to save your changes. Then use ctrl+x to exit
   # Through the HPC's OnDemand using VSCode
   1. On the HPC OnDemand website navigate to the Apps dropdown in the top left corner.
-  2. Click on VsCode and scroll down to the bottom and click launch
+  2. Click on VsCode, scroll to the bottom and click launch
   3. Once the session starts click on the Launch VsCode Gui button.
   4. In the top left click on file and then click on open file
   5. Navigate to the Slowing_Bar_HPC folder and select slowing_bar_run_hpc.sh
@@ -48,3 +48,11 @@ This can be achieved using the HPC's OnDemand or through the terminal.
   10. **MUST DO** To set how many stars you would like to integrate modify line --> number_of_starts_to_integrate=20 --> Enter the number of stars you would like to integrate here or enter -1 to use the whole array.
   11. **MUST DO** If you changed the number of arrays you are integrating **YOU MUST CHANGE THIS LINE TO THE APPROPRIATE NUMBER OF NODES** --> tot_arr=4 # this is the total number of jobs --> You must set this to the correct number of nodes or the program **will not run properly**
   12. Exit out of the VsCode Gui and close the session.
+# Starting the Program
+1. To run the program go into the ssh terminal
+2. Navigate to the parent directory (./Slowing_Bar_HPC)
+3. In terminal type sbatch slowing_bar_hpc_run.sh and hit enter.
+4. This starts the program. To view the program's status go to the directory where output files are designated to output and view them.
+# Viewing Results
+1. To collect your output files go to ./Slowing_Bar_HPC/orbits/SlowDehnenBar_CR4_CR8/ --> The output files are here and labeled according to date and type (aka cartesian, cylindrical, action potential)
+2. The file placed in the !_Input folder has been moved to ./Slowing_Bar_HPC/orbits/GrowDehnenBar_CR4/ --> and renamed to match the output files names. 
