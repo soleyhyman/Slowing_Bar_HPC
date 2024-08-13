@@ -10,9 +10,6 @@ parser = argparse.ArgumentParser(description='Creating README and making necissa
 parser.add_argument('-n', '--nstars', type=int, nargs=1, help='The number of stars.')
 parser.add_argument('-sn', '--simname', type=str, nargs=1, help='The name of the output folder.')
 parser.add_argument('-ssn', '--startsimname', type=str, nargs=1, help='The name of the folder holding inital data.')
-# parser.add_argument('-rmin', '--rmin', type=float, nargs=1, help='Value of rmin.')
-# parser.add_argument('-rmax', '--rmax', type=float, nargs=1, help='Value of rmax.')
-# parser.add_argument('-zmax', '--zmax', type=float, nargs=1, help='Value of zmax.')
 args = vars(parser.parse_args())
 
 # create orbit dir
