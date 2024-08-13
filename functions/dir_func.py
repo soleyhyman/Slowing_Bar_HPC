@@ -38,6 +38,10 @@ def get_unique_filename(base_name, extension, directory):
         counter += 1
     return filename
 
+def get_short_filename(base_name, extension, directory):
+    filename = os.path.join(directory, f"{base_name}.{extension}")
+    return filename
+
 # this function is intended to take a dictionary and return two 
 #       dictionaries one of the serializable objs and one of non-serializable
 def json_serialize_check(input_dict):

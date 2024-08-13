@@ -2,7 +2,7 @@ from imports import json, argparse, datetime, __version__, timezone,os,np
 from DiskModel_obj import DiskModel_obj
 from dbm_omega_obj import dbm_omega_obj
 from create_readMe import diskmodel_readme, dehnen_readme
-from dir_func import create_directories, get_unique_filename, json_serialize_full, get_current_time_dhm,find_input_file
+from dir_func import create_directories, get_unique_filename, json_serialize_full, get_current_time_dhm,find_input_file,get_short_filename
 from svptfncts import saveData
 
 #create parser to get arguments from sh
@@ -59,12 +59,13 @@ dbo_clean,dbo_dirty=json_serialize_full(dehnenbar_omega.get_params())
 dir_data = {
     "outdir" : f"./orbits/{str(args['simname'][0])}",
     'inputdir' : f"./orbits/{str(args['startsimname'][0])}",
+    'sim_name_short':f"{args['startsimname'][0]}_{sim_params['nstars']}",
     'sim_name_full': f"{args['startsimname'][0]}_{sim_params['nstars']}_{get_current_time_dhm()}"
 }
 
 # create unique filename
-json_filename = f"{dir_data['sim_name_full']}"
-json_unique = get_unique_filename(json_filename,'json','./metadata')
+json_filename = f"{dir_data['sim_name_short']}"
+json_unique = get_short_filename(json_filename,'json','./metadata')
 
 # create README name
 rmfile = f"{dir_data['sim_name_full']}_README"
@@ -75,8 +76,8 @@ dir_data['rmfile_dir'] = rmfile_unique
 dir_data['json_dir'] = json_unique 
 
 # pickle diskmodel and dehnenbar objs for TimeScale and other files
-dm_name=get_unique_filename(f'diskmodel_obj_{get_current_time_dhm()}_','pickle','./metadata/pickles')
-dbo_name=get_unique_filename(f'dehnenbar_omega_obj_{get_current_time_dhm()}_','pickle','./metadata/pickles')
+dm_name=get_short_filename(f'diskmodel_obj_','pickle','./metadata/pickles')
+dbo_name=get_short_filename(f'dehnenbar_omega_obj_','pickle','./metadata/pickles')
 saveData(diskmodel,dm_name)
 saveData(dehnenbar_omega,dbo_name)
 

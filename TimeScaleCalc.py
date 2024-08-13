@@ -1,5 +1,5 @@
 from imports import u, np, argparse, json, vcirc, argrelextrema, lindbladR, np,os
-from dir_func import get_unique_filename, json_serialize_full
+from dir_func import get_unique_filename, json_serialize_full, get_short_filename
 from svptfncts import loadData,saveData
 from create_readMe import TimeScaleCalc_readme
 
@@ -57,7 +57,7 @@ NatToGyrConversion = dtmaxPhys/dtmaxNat
 TSlowNat = ((dehnenBarModel_Omega_data['TSlowPhys']/NatToGyrConversion).decompose()).value
 
 # pickles TSlowNat so it can be passed to integrate orbits
-TSlowNat_name=get_unique_filename('TSlowNat','pickle','./metadata/pickles')
+TSlowNat_name=get_short_filename('TSlowNat','pickle','./metadata/pickles')
 saveData(TSlowNat,TSlowNat_name)
 data['dir_data']['TSlowNat_dir']=TSlowNat_name
 
@@ -87,29 +87,28 @@ phit = findphit(dehnenBarModel_Omega_data['omegaBi'],omegat,tvector)
 cosphit = np.cos(phit*u.rad)
 maxpoints = argrelextrema(cosphit, np.greater)
 
-# IDK WHAT THIS DOES #################33
 endmwCR = lindbladR(diskmodel_data['mwp'],omegat[maxpoints[0][-1]],m='corotation')*diskmodel_data['ro']*u.kpc
 
 ####################################################################
 # Setup meta data files
 
 # tfile creation
-tfile = f"{dir_data['sim_name_full']}_tvector"
-tfile_unique = get_unique_filename(tfile,'npy','./metadata')
+tfile = f"{dir_data['sim_name_short']}_tvector"
+tfile_unique = get_short_filename(tfile,'npy','./metadata')
 np.save(tfile_unique,tvector)
 data['dir_data']['tvector_dir']=tfile_unique
 
 # tphiofile creation
-tphiofile = f"{dir_data['sim_name_full']}_tphi0"
-tphio_unique= get_unique_filename(tphiofile,'npy','./metadata')
+tphiofile = f"{dir_data['sim_name_short']}_tphi0"
+tphio_unique= get_short_filename(tphiofile,'npy','./metadata')
 nphio = maxpoints[0]
 nphio = np.insert(nphio,0,0)
 np.save(tphio_unique,nphio)
 data['dir_data']['tphio_dir']=tphio_unique
 
 # create omeatfile download
-omegatfile =  f"{dir_data['sim_name_full']}_Omegat"
-omegat_unique = get_unique_filename(omegatfile,'npy','./metadata')
+omegatfile =  f"{dir_data['sim_name_short']}_Omegat"
+omegat_unique = get_short_filename(omegatfile,'npy','./metadata')
 np.save(omegat_unique,omegat[nphio])
 data['dir_data']['omegat_dir']=omegat_unique
 
