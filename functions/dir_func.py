@@ -27,6 +27,16 @@ def get_current_time_dhm():
     
     return f"{days}.{hours}.{minutes}"
 
+def dir_layer_out(num_layers,curr_str):
+    # cuts off the first two chars (aka ./)
+    curr_str=curr_str[2:]
+    exit_layers=''
+    # add a ../ for each layer
+    for layer in num_layers:
+        exit_layers+='../'
+    # return layered out str
+    return f"{exit_layers}{curr_str}"
+
 def create_directories(path):
     os.makedirs(path, exist_ok=True)
 

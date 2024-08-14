@@ -32,3 +32,9 @@ for type in range(3):
             results=np.concatenate((results,curr_arr),axis=0)
         os.remove(f"{init_name}_{x}.npy")
     np.save(init_name,results)
+    # add filename to json
+    dir_data[f'orbit_{kinds}']=init_name
+
+# write filenames to json
+with open(args['jsondir'][0], 'w') as json_file:
+    json.dump(data,json_file, indent=4)
