@@ -61,7 +61,7 @@ dbo_clean,dbo_dirty=json_serialize_full(dehnenbar_omega.get_params())
 dir_data = {
     "outdir" : f"./orbits/{str(args['simname'][0])}",
     'inputdir' : f"./orbits/{str(args['startsimname'][0])}",
-    'sim_name_short':f"{args['startsimname'][0]}_{sim_params['nstars']}_{int(os.environ["SLURM_ARRAY_TASK_ID"])}",
+    'sim_name_short':f"{args['startsimname'][0]}_{sim_params['nstars']}",
     'sim_name_full': f"{args['startsimname'][0]}_{sim_params['nstars']}_{get_current_time_dhm()}"
 }
 
