@@ -13,7 +13,7 @@
 #SBATCH --partition=standard
 #SBATCH --account=kjdaniel
 #SBATCH --time=1:00:00
-#SBATCH --output=./HPC_Outputs/job_out_%x-%j-%A-%a.out
+#SBATCH --output=./HPC_Job_Outputs/job_out_%x-%j-%A-%a.out
 #SBATCH --mail-type=all
 #SBATCH --mail-user=rtolfree@arizona.edu
 
