@@ -63,8 +63,7 @@ arr_id = int(os.environ["SLURM_ARRAY_TASK_ID"])
 # create pot
 pot=[diskmodel_data['mwp'],btp]
 
-# pull nphio
-nphio=np.load(dir_data['tphio_dir'])
+# pull tvector
 tvector=np.load(dir_data['tvector_dir'])
 
 # integration_func
@@ -137,6 +136,7 @@ else:
             os.remove(names[x][type])
         save_name=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_{kinds[type]}_{arr_id}.npy"
         np.save(save_name,first_arr)
+        
 if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
     with open(args['jsondir'][0],'w') as json_file:
         json.dump(data,json_file,indent=4)

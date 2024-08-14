@@ -1,4 +1,4 @@
-from imports import json, argparse, datetime, __version__, timezone,os,np
+from imports import json, argparse, datetime, __version__, timezone,os,np,time
 from DiskModel_obj import DiskModel_obj
 from dbm_omega_obj import dbm_omega_obj
 from create_readMe import diskmodel_readme, dehnen_readme
@@ -39,6 +39,8 @@ if args['nstars'][0]==-1:
 else:
     nstars=args['nstars'][0]
 
+print(f'Integrating using {nstars} stars')
+
 # setup sim params 
 sim_params = {
     'nstars' : nstars,
@@ -59,7 +61,7 @@ dbo_clean,dbo_dirty=json_serialize_full(dehnenbar_omega.get_params())
 dir_data = {
     "outdir" : f"./orbits/{str(args['simname'][0])}",
     'inputdir' : f"./orbits/{str(args['startsimname'][0])}",
-    'sim_name_short':f"{args['startsimname'][0]}_{sim_params['nstars']}",
+    'sim_name_short':f"{args['startsimname'][0]}_{sim_params['nstars']}_{int(os.environ["SLURM_ARRAY_TASK_ID"])}",
     'sim_name_full': f"{args['startsimname'][0]}_{sim_params['nstars']}_{get_current_time_dhm()}"
 }
 
@@ -93,11 +95,15 @@ json_data = {
     'dehnenBarModel_Omega_data': dbo_clean,
 }
 
-# create json
-with open(json_unique, 'w') as json_file:
-    json.dump(json_data,json_file, indent=4)
+
 
 if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
+    print('Node 0, creating json and ReadMe.')
+
+    # create json
+    with open(json_unique, 'w') as json_file:
+        json.dump(json_data,json_file, indent=4)
+
     # create README
     with open(rmfile_unique, 'w') as rm:
         rm.write('Slowing Bar Integration\n\n')
@@ -112,12 +118,15 @@ if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
     # add diskmodel and dehnen to readme 
     diskmodel_readme(json_unique)
     dehnen_readme(json_unique)
+else:
+    print('Letting Node 0 create json, waiting 20 seconds.')
+    time.sleep(20)
 
-    # writes dirs to a .sh file to bring up to the running shell
-    with open('metadata/dirs.sh', 'w') as f:
-        f.write(f"input_dir={dir_data['inputdir']}\n")
-        f.write(f"output_dir={dir_data['outdir']}\n")
-        f.write(f"json_dir={dir_data['json_dir']}\n")
-        f.write(f"readme_dir={dir_data['rmfile_dir']}\n")
-        f.write(f"dm_name={dm_name}\n")
-        f.write(f"dbo_name={dbo_name}\n")
+# writes dirs to a .sh file to bring up to the running shell
+with open(f'metadata/dirs.sh', 'w') as f:
+    f.write(f"input_dir={dir_data['inputdir']}\n")
+    f.write(f"output_dir={dir_data['outdir']}\n")
+    f.write(f"json_dir={dir_data['json_dir']}\n")
+    f.write(f"readme_dir={dir_data['rmfile_dir']}\n")
+    f.write(f"dm_name={dm_name}\n")
+    f.write(f"dbo_name={dbo_name}\n")

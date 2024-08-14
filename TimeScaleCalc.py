@@ -145,7 +145,7 @@ if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
     TimeScaleCalc_readme(args['jsondir'][0])
 
     # write vars to be passed up to shell 
-    with open('metadata/dirs1.sh', 'w') as f:
-        f.write(f"tvector_dir={tfile_unique}\n")
-        f.write(f"tphio_dir={tphio_unique}\n")
-        f.write(f"omegat_dir={omegat_unique}\n")
+with open('metadata/dirs1.sh', 'w') as f:
+    f.write(f"tvector_dir={tfile_unique}\n")
+    f.write(f"tphio_dir={tphio_unique}\n")
+    f.write(f"omegat_dir={omegat_unique}\n")
