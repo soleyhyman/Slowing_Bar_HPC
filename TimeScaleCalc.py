@@ -16,7 +16,7 @@ args = vars(parser.parse_args())
 # create inital funcitons to find length of each timestep for adequate resolution
 def timescalePhys(R,vc): # <-- use R [kpc] and vc [km/s]
     R = R *u.kpc
-    vc = vc *u.km/u.s
+    vc = u.Quantity(vc, unit=u.km/u.s)
     T = 2 *np.pi *R/vc
     return T.to(u.Myr)
 
@@ -77,6 +77,10 @@ TbarfNat = 2.*np.pi/dehnenBarModel_Omega_data['omegaBf']
 TbariPhys = (TbariNat*NatToGyrConversion).to(u.Gyr)
 TbarfPhys = (TbarfNat*NatToGyrConversion).to(u.Gyr)
 
+# calc circular velocity at corotation
+vc_CRi = u.Quantity(vcirc(diskmodel_data['mwp'], dehnenBarModel_Omega_data['CRi'], vo=diskmodel_data['vo'], ro=diskmodel_data['ro']), unit=u.km/u.s)
+vc_CRf = u.Quantity(vcirc(diskmodel_data['mwp'], dehnenBarModel_Omega_data['CRf'], vo=diskmodel_data['vo'], ro=diskmodel_data['ro']), unit=u.km/u.s)
+
 # calc omegat
 omegat = findomegat(dehnenBarModel_Omega_data['omegaBi'],dehnenBarModel_Omega_data['omegaBf'],tvector)
 
@@ -129,8 +133,8 @@ timeScaleVals_readme={
     'len_omegat':len(omegat),
     'len_phit':len(phit),
     'tstepPhys_c':np.round(tstepPhys.to(u.Myr),3),
-    'CRi_corot': np.round((TbariPhys * vcirc(diskmodel_data['mwp'], dehnenBarModel_Omega_data['CRi'], vo=diskmodel_data['vo'], ro=diskmodel_data['ro']) * u.km / u.s / (2. * np.pi)).to(u.kpc), 2),
-    'CRf_corot':np.round((TbarfPhys * vcirc(diskmodel_data['mwp'], dehnenBarModel_Omega_data['CRf'], vo=diskmodel_data['vo'], ro=diskmodel_data['ro']) * u.km / u.s / (2. * np.pi)).to(u.kpc), 2)
+    'CRi_corot': np.round((TbariPhys * vc_CRi / (2. * np.pi)).to(u.kpc), 2),
+    'CRf_corot': np.round((TbarfPhys * vc_CRf / (2. * np.pi)).to(u.kpc), 2)
 }
 
 # clean data for json
@@ -144,7 +148,7 @@ if int(os.environ["SLURM_ARRAY_TASK_ID"])==0:
     # create readme
     TimeScaleCalc_readme(args['jsondir'][0])
 
-    # write vars to be passed up to shell 
+# write vars to be passed up to shell 
 with open('metadata/dirs1.sh', 'w') as f:
     f.write(f"tvector_dir={tfile_unique}\n")
     f.write(f"tphio_dir={tphio_unique}\n")
