@@ -69,7 +69,7 @@ tvector=np.load(dir_data['tvector_dir'])
 # integration_func
 def integration_loop(index):
     orbits=Orbit(ICs[index])
-    orbits.integrate(tvector,pot,method='leapfrog_c')
+    orbits.integrate(tvector,pot,method='leapfrog')
 
     # get cyl coords
     orp = np.array([orbits.R(tvector),
@@ -87,9 +87,6 @@ def integration_loop(index):
                     orbits.vy(tvector),
                     orbits.vz(tvector)])
     
-    # get eccentricities
-    oe = np.array([orbits.e(tvector)])
-
     # get action potential
     mwp=diskmodel_data['mwp']
     oa = np.array([orbits(tvector).jr(mwp),
@@ -103,15 +100,12 @@ def integration_loop(index):
     orp=orp.transpose(1,2,0)
     oxy=oxy.transpose(1,2,0)
     oa=oa.transpose(1,2,0)
-    oe=oe.transpose(1,2,0)
     save_name_cyl=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cyl_{arr_id}_{index}.npy"
     save_name_cart=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cart_{arr_id}_{index}.npy"
     save_name_action=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_action_{arr_id}_{index}.npy"
-    save_name_ecc=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_ecc_{arr_id}_{index}.npy"
     np.save(save_name_cyl,orp)
     np.save(save_name_cart,oxy)
     np.save(save_name_action,oa)
-    np.save(save_name_ecc,oe)
     del(orbits)
     return [index,save_name_cyl,save_name_cart,save_name_action]
 
