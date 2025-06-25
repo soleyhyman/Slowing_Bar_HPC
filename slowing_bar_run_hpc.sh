@@ -2,7 +2,7 @@
 
 # slurm job script for slowing bar integration
 
-#SBATCH --job-name=slowing_bar_hpc
+#SBATCH --job-name=slowingBar
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 ### added for parallelizing test ###
