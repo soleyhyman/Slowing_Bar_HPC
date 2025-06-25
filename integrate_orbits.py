@@ -10,7 +10,7 @@ def orbit_file_setup(inname,num_cpus,num_arrs,arr_id,num_stars):
     ICs = np.transpose(np.array([ICfile[0,:,-1],ICfile[3,:,-1],ICfile[4,:,-1],ICfile[2,:,-1],ICfile[5,:,-1],ICfile[1,:,-1]]))
     ICs=ICs[:num_stars]
 
-    # even deistributes arr into large bins based on how many array there are and assigns each arr a different set
+    # even distributes arr into large bins based on how many array there are and assigns each arr a different set
     trim = ICs[:len(ICs)%num_arrs]
     ICs=ICs[len(trim):]
     ICs = ICs.reshape(num_arrs,-1,6)
@@ -35,7 +35,7 @@ parser.add_argument('-sn', '--simname', type=str, nargs=1, help='The name of the
 parser.add_argument('-a', '--tot_arr',type=int,nargs=1, help='The total number of arrays in array job.')
 args = vars(parser.parse_args())
 
-# open json to get necissary file paths
+# open json to get necessary file paths
 with open(args['jsondir'][0],'r') as json_file:
     data=json.load(json_file)
     dir_data=data['dir_data']
@@ -47,7 +47,7 @@ with open(args['jsondir'][0],'r') as json_file:
     dehnenBarModel_Omega_data=dehnenBarModel_Omega.get_params()
 
 # recreate TSlowNat
-# set adiquite timestamps 
+# set adequate timestamps 
 TSlowNat = loadData(data['dir_data']['TSlowNat_dir'])
 
 # create btp
@@ -63,13 +63,14 @@ arr_id = int(os.environ["SLURM_ARRAY_TASK_ID"])
 # create pot
 pot=[diskmodel_data['mwp'],btp]
 
-# pull tvector
+# pull timevector
 tvector=np.load(dir_data['tvector_dir'])
 
 # integration_func
 def integration_loop(index):
     orbits=Orbit(ICs[index])
-    orbits.integrate(tvector,pot,method='leapfrog')
+    orbits.integrate(tvector,pot,method='leapfrog_c')
+
     # get cyl coords
     orp = np.array([orbits.R(tvector),
                 orbits.phi(tvector),
@@ -77,6 +78,7 @@ def integration_loop(index):
                 orbits.vR(tvector),
                 orbits.vT(tvector),
                 orbits.vz(tvector)])
+
     # get cart coords
     oxy = np.array([orbits.x(tvector),
                     orbits.y(tvector),
@@ -84,32 +86,42 @@ def integration_loop(index):
                     orbits.vx(tvector),
                     orbits.vy(tvector),
                     orbits.vz(tvector)])
+    
+    # get eccentricities
+    oe = np.array([orbits.e(tvector)])
+
     # get action potential
     mwp=diskmodel_data['mwp']
     oa = np.array([orbits(tvector).jr(mwp),
                     orbits(tvector).jp(mwp),
-                    orbits(tvector).jz(mwp)])
+                    orbits(tvector).jz(mwp),
+                    orbits(tvector).Or(mwp),
+                    orbits(tvector).Op(mwp),
+                    orbits(tvector).Oz(mwp)])
     
-    # transposes orp so that its organized by orbit - timestamps - cords
+    # transposes orp so that it's shape is (particles, timesteps, number of coordinates)
     orp=orp.transpose(1,2,0)
     oxy=oxy.transpose(1,2,0)
     oa=oa.transpose(1,2,0)
+    oe=oe.transpose(1,2,0)
     save_name_cyl=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cyl_{arr_id}_{index}.npy"
     save_name_cart=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_cart_{arr_id}_{index}.npy"
     save_name_action=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_action_{arr_id}_{index}.npy"
+    save_name_ecc=f"{dir_data['outdir']}/{dir_data['sim_name_full']}_ecc_{arr_id}_{index}.npy"
     np.save(save_name_cyl,orp)
     np.save(save_name_cart,oxy)
     np.save(save_name_action,oa)
+    np.save(save_name_ecc,oe)
     del(orbits)
     return [index,save_name_cyl,save_name_cart,save_name_action]
 
 # get input name
 input_name=find_input_file('./!_Input','*.npy')
 
+# perform integration 
 if input_name==-1:
     print('No Input File')
 else:
-# perform integration 
     # generate ICs
     input_name=str('./!_Input/'+input_name)
     # add input name to dir data
